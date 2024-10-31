@@ -1,41 +1,42 @@
 const ServicePessoa = require('../services/pessoa')
 
 class ControllerPessoa {
-    GetPessoas(req, res) {
+    async GetPessoas(req, res) {
         try {
-            const pessoas = ServicePessoa.GetPessoas()
+            const pessoas = await ServicePessoa.GetPessoas()
             res.send({msg:pessoas})
         } catch (error) {
             res.status(500).send({msg:error.message})
         }
     }
 
-    CreatePessoa(req, res) {
+    async CreatePessoa(req, res) {
         try {
-            const name = req.body.name
-            const pessoa = ServicePessoa.CreatePessoa(name)
+            const { name, password, email } = req.body
+
+            const pessoa = await ServicePessoa.CreatePessoa(name, password, email)
             res.send({msg:pessoa})
         } catch (error) {
             res.status(500).send({msg:error.message})
         }
     }
 
-    UpdatePessoa(req, res) {
+    async UpdatePessoa(req, res) {
         try {
             const id = req.params.id
-            const name = req.body.name
-            const pessoa = ServicePessoa.UpdatePessoa(id, name)
+            const { name, password, email } = req.body
+            const pessoa = await ServicePessoa.UpdatePessoa(id, name, password, email)
             res.send({msg:pessoa})
         } catch (error) {
             res.status(500).send({msg:error.message})
         }
     }
 
-    DeletePessoa(req, res) {
+    async DeletePessoa(req, res) {
         try {
             const id = req.params.id
-            const pessoa = ServicePessoa.DeletePessoa(id)
-            res.send({msg:pessoa})
+            await ServicePessoa.DeletePessoa(id)
+            res.status(204).send()
         } catch (error) {
             res.status(500).send({msg:error.message})
         }

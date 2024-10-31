@@ -1,20 +1,38 @@
 const ModelPessoa = require('../models/pessoa')
 
 class ServicePessoa {
-    GetPessoas() {
-        return ModelPessoa.GetPessoas()
+    async GetPessoas() {
+        return ModelPessoa.findAll()
     }
 
-    CreatePessoa(name) {
-        return ModelPessoa.CreatePessoa(name)
+    async CreatePessoa(name, password, email) {
+        if(!name || !password || !email) {
+            throw new Error("Todos os dados são obrigatórios!")
+        }
+        return ModelPessoa.create({ name, password, email })
     }
 
-    UpdatePessoa(id, name) {
-        return ModelPessoa.UpdatePessoa(id, name)
+    async UpdatePessoa(id, name, password, email) {
+        if(!id) {
+            throw new Error("Favor informar o id")
+        }
+        const pessoa = await ModelPessoa.findByPk(id)
+        if(!pessoa) {
+            throw new Error("Pessoa não encontrada")
+        }
+        pessoa.name = name || pessoa.name
+        pessoa.password = password || pessoa.password
+        pessoa.email = email || pessoa.email
+
+        pessoa.save()
+        return pessoa
     }
 
-    DeletePessoa(id) {
-        return ModelPessoa.DeletePessoa(id)
+    async DeletePessoa(id) {
+        if(!id) {
+            throw new Error("Favor informar o id")
+        }
+        return ModelPessoa.destroy({ where: { id } })
     }
 }
 
